@@ -25,12 +25,12 @@
     ],
     "lib": [
       "ES6",
-      "DOM"
+      "DOM",
     ]
   },
   "include": [
     "src/**/*.ts",
-    "test/setupTest.ts"
+    // "test/setupTest.ts"
   ],
   "exclude": [
     "node_modules",

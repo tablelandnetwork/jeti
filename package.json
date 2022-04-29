@@ -1,6 +1,6 @@
 {
-  "name": "@tableland/sdk",
-  "version": "0.0.2",
+  "name": "@tableland/jeti",
+  "version": "0.0.1",
   "description": "A TypeScript/JavaScript library for creating and querying Tables on the Tableland network.",
   "repository": "https://github.com/tablelandnetwork/js-tableland",
   "license": "MIT",
@@ -17,13 +17,13 @@
   },
   "type": "module",
   "main": "./dist/cjs/main.js",
-  "module": "./dist/esm/src/main.js",
-  "types": "./dist/esm/src/main.d.ts",
+  "module": "./dist/esm//main.js",
+  "types": "./dist/esm//main.d.ts",
   "exports": {
     ".": {
       "require": "./dist/cjs/main.js",
-      "import": "./dist/esm/src/main.js",
-      "default": "./dist/esm/src/main.js"
+      "import": "./dist/esm/main.js",
+      "default": "./dist/esm/main.js"
     },
     "./connector": {
       "require": "./dist/cjs/lib/connector.js",
@@ -90,8 +90,13 @@
     "@babel/preset-typescript": "^7.16.7",
     "@stablelib/base64": "^1.0.1",
     "@tableland/eth": "0.0.2",
+    "@tableland/jeti": "^0.0.1",
+    "@tableland/sdk": "^0.0.2",
     "add-js-extension": "^1.0.4",
-    "ethers": "^5.5.2"
+    "ethers": "^5.5.2",
+    "ipfs-core": "^0.14.3",
+    "ipfs-http-client": "^56.0.3",
+    "web3.storage": "^4.2.0"
   },
   "contributors": [
     "Allen Muncy <allen@textile.io>",
