@@ -22,7 +22,7 @@ async function resolve(
   resolveSet.rows = resultSet.rows.map(async (row) => {
     const resolvingRow = row.map((cell: any, key: number) => {
       if (resolveColumnIndex.includes(key)) {
-        return ipfs.get(cell);
+        return ipfs.cat(cell);
       }
       return cell;
     });
