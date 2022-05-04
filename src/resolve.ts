@@ -1,4 +1,4 @@
-import * as IPFS from "ipfs-http-client";
+import { globalIpfsClient } from "./ipfs-http-client-setup.js";
 
 interface ResultSet {
   columns: Array<any>;
@@ -9,7 +9,7 @@ async function resolve(
   resultSet: ResultSet,
   columnsToResolve: [string]
 ): Promise<ResultSet> {
-  const ipfs = await IPFS.create({});
+  const ipfs = await globalIpfsClient;
   const resolveColumnIndex: Array<number> = [];
   resultSet.columns.forEach((column, key) => {
     if (columnsToResolve.includes(column.name)) {

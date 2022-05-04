@@ -1,4 +1,4 @@
-import * as IPFS from "ipfs-http-client";
+import { globalIpfsClient } from "./ipfs-http-client-setup.js";
 
 function zip(firstArray: string[], secondArray: string[]) {
   let str = "";
@@ -13,8 +13,16 @@ function zip(firstArray: string[], secondArray: string[]) {
   return str;
 }
 
-async function BlobToPinnedIpfs(blob: Blob) {
-  const ipfs = await IPFS.create({});
+type FileContent = Uint8Array | Blob;
+// ipfs.add all supports these:
+// May add support later.
+// | String
+// | Iterable<Uint8Array>
+// | AsyncIterable<Uint8Array>
+// | ReadableStream<Uint8Array>;
+
+async function sendToPinned(content: FileContent) {
+  const ipfs = await globalIpfsClient;
 
   const pinningServices = await ipfs.pin.remote.service.ls();
 
@@ -24,7 +32,7 @@ async function BlobToPinnedIpfs(blob: Blob) {
     const noPinningService = "No remote pinning service connected.";
     throw noPinningService;
   } else {
-    const { cid } = await ipfs.add(await blob.arrayBuffer());
+    const { cid } = await ipfs.add(content);
 
     ipfs.pin.remote.add(cid, {
       service: pinningServices[0].service,
@@ -34,6 +42,8 @@ async function BlobToPinnedIpfs(blob: Blob) {
   }
 }
 
+// If you want to save a string to IPFS, simply encode it
+// Do this using `new TextEncoder().encode("Your string here")`
 async function prepare(strings: TemplateStringsArray, ...values: any[]) {
   const strings2 = Array.from(strings);
 
@@ -41,7 +51,10 @@ async function prepare(strings: TemplateStringsArray, ...values: any[]) {
     let res = value;
     switch (true) {
       case value instanceof Blob:
-        res = await BlobToPinnedIpfs(value);
+        res = await sendToPinned(await value.arrayBuffer());
+        break;
+      case value instanceof Uint8Array:
+        res = await sendToPinned(value);
         break;
     }
     return res;
