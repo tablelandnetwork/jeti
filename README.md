@@ -23,7 +23,7 @@ A TypeScript/JavaScript library for inserting and extracting IPFS data to and fr
 
 # Background
 
-The Tableland project provides a zero-config Typescript/Javascript SDK that make it easy to interact with the Tableland network from Ethereum-based applications. The [`@tableland/jeti`](https://github.com/tablelandnetwork/js-tableland-ipfs) SDK builds on that, allowing using to easily add IPFS data to tableland, and read the data from tableland.
+The Tableland project provides a zero-config Typescript/Javascript SDK that make it easy to interact with the Tableland network from Ethereum-based applications. The [`@tableland/jeti`](https://github.com/tablelandnetwork/js-tableland-ipfs) SDK builds on that, allow you to easily add IPFS data to tableland, and read the data from tableland.
 
 Simply import the library, connect to the Tableland network, and you are ready to start creating and updating tables.
 
@@ -50,18 +50,18 @@ const connection = await connect({ network: "testnet" });
 
 
 let id = connection.create(
-  `CREATE TABLE table (id int primary key, name text, avatar_cid text, primary key (id))`
+  prepare`CREATE TABLE table (id int primary key, name text, avatar_cid text, primary key (id))`
 );
 
 const avatar = new Blob([/* avatar img file contents here */]);
 
-let res = await prepare`INSERT INTO Table_01 (firstname, avatar}) VALUES ('Murray', ${avatar});`;
+let preparedQuery = await prepare`INSERT INTO Table_01 (firstname, avatar) VALUES ('Murray', ${avatar});`;
 
-connect.query(res);
+let receipt = connect.query(preparedQuery);
 
-const { rows, columns } = await resolve(res, ['avatar']); 
+const { rows, columns } = await resolve(receipt, ['avatar']); 
 // Instead of containing the CID from the database, 
-// 'row' now contains the actual content
+// 'row' now contains the actual content as an AsyncIterator of a UINT8Array
 
 ```
 
@@ -80,7 +80,7 @@ ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin  '["*"]'
 
 The `@tableland/sdk` library includes functions for connecting to remote clients, creating and mutating tables, querying existing tables, and listing all user tables. 
 
-The `prepare` function can be used to connect to prepare a statement.
+The `prepare` function can be used to prepare a statement, while simultaniously uploading files to your remote pinning services.
 
 With `resolve`, the user fetches data from IPFS into the result set. 
 
