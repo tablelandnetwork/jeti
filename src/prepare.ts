@@ -21,7 +21,7 @@ type FileContent = Uint8Array | Blob;
 // | AsyncIterable<Uint8Array>
 // | ReadableStream<Uint8Array>;
 
-async function sendToPinned(content: FileContent) {
+async function sendToPinned(content: FileContent, _name = null) {
   const ipfs = await globalIpfsClient;
 
   const pinningServices = await ipfs.pin.remote.service.ls();
@@ -32,12 +32,31 @@ async function sendToPinned(content: FileContent) {
     const noPinningService = "No remote pinning service connected.";
     throw noPinningService;
   } else {
-    const { cid } = await ipfs.add(content);
+    let path = "";
+    if (_name) {
+      path = `/${_name}`;
+    }
+    const res = await ipfs.add(
+      { content, path },
+      { wrapWithDirectory: path !== "" }
+    );
+    const { cid } = res;
+    ipfs.pin.remote
+      .add(cid, {
+        service: pinningServices[0].service,
+        name: "Tableland Upload",
+      })
+      .catch((err) => {
+        const message: string = err.message;
+        if (message.includes("DUPLICATE_OBJECT")) {
+          console.log(
+            "Good news; that CID is already pinned to your pinning service."
+          );
+          return;
+        }
+        throw err;
+      });
 
-    ipfs.pin.remote.add(cid, {
-      service: pinningServices[0].service,
-      name: "Tableland Upload",
-    });
     return cid.toV1().toString();
   }
 }
@@ -51,7 +70,7 @@ async function prepare(strings: TemplateStringsArray, ...values: any[]) {
     let res = value;
     switch (true) {
       case value instanceof Blob:
-        res = await sendToPinned(await value.arrayBuffer());
+        res = await sendToPinned(await value.arrayBuffer(), value.name);
         break;
       case value instanceof Uint8Array:
         res = await sendToPinned(value);

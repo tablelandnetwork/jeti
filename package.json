@@ -1,8 +1,8 @@
 {
   "name": "@tableland/jeti",
-  "version": "0.0.1",
-  "description": "A TypeScript/JavaScript library for creating and querying Tables on the Tableland network.",
-  "repository": "https://github.com/tablelandnetwork/js-tableland",
+  "version": "0.0.3",
+  "description": "A TypeScript/JavaScript extension for the @tableland/sdk for inserting and retreiving IPFS content from tables",
+  "repository": "https://github.com/tablelandnetwork/jeti",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -41,7 +41,6 @@
     "jest.config.js": "cjs"
   },
   "scripts": {
-    "prepublish": "npm run build:all",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "jest --verbose",
     "clean": "rm -rf dist build package",
@@ -90,7 +89,7 @@
     "@babel/preset-typescript": "^7.16.7",
     "@stablelib/base64": "^1.0.1",
     "@tableland/eth": "0.0.2",
-    "@tableland/jeti": "^0.0.1",
+    "@tableland/jeti": "^0.0.2",
     "@tableland/sdk": "^0.0.2",
     "add-js-extension": "^1.0.4",
     "ethers": "^5.5.2",

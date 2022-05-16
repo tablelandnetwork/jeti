@@ -55,14 +55,21 @@ let id = connection.create(
 
 const avatar = new Blob([/* avatar img file contents here */]);
 
-let res = await connection.query(
-  `INSERT (firstname, ${avatar)}) VALUES ('Murray' INTO ${id})`
-);
-res = await connection.query(`SELECT * FROM ${id}`);
-const { rows, columns} = await resolve(res, ['avatar']); 
+let res = await prepare`INSERT INTO Table_01 (firstname, avatar}) VALUES ('Murray', ${avatar});`;
+
+connect.query(res);
+
+const { rows, columns } = await resolve(res, ['avatar']); 
 // Instead of containing the CID from the database, 
 // 'row' now contains the actual content
 
+```
+
+Fun fact: If you're using JETI in the browser with your local IPFS node, you'll need to change your HTTPHeaders Accessn control policy, like so: 
+
+```
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "POST", "GET"]'
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin  '["*"]'
 ```
 
 # API
