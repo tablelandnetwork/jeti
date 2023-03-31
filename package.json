@@ -1,7 +1,7 @@
 {
   "name": "@tableland/jeti",
   "version": "0.0.3",
-  "description": "A TypeScript/JavaScript extension for the @tableland/sdk for inserting and retreiving IPFS content from tables",
+  "description": "DEPRECATED: A TypeScript/JavaScript extension for the @tableland/sdk for inserting and retreiving IPFS content from tables",
   "repository": "https://github.com/tablelandnetwork/jeti",
   "license": "MIT",
   "publishConfig": {
