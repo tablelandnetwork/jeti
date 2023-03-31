@@ -1,7 +1,3 @@
-# **Deprecated**
-
-This repository is no longer actively maintained and is deprecated.
-
 # @tableland/jeti (JavaScript Extension for Tableland and IPFS)
 
 [![Lint and test](https://github.com/tablelandnetwork/js-tableland/actions/workflows/lint-and-test.yml/badge.svg)](https://github.com/tablelandnetwork/js-tableland/actions/workflows/lint-and-test.yml)
@@ -11,9 +7,10 @@ This repository is no longer actively maintained and is deprecated.
 
 A TypeScript/JavaScript library for inserting and extracting IPFS data to and from Tableland queries using the `@tableland/sdk`.
 
+This library is only compatible with version 3 of `@tableland/sdk`.
+
 # Table of Contents
 
-- [**Deprecated**](#deprecated)
 - [@tableland/jeti (JavaScript Extension for Tableland and IPFS)](#tablelandjeti-javascript-extension-for-tableland-and-ipfs)
 - [Table of Contents](#table-of-contents)
 - [Background](#background)
