@@ -7,7 +7,7 @@
 
 A TypeScript/JavaScript library for inserting and extracting IPFS data to and from Tableland queries using the `@tableland/sdk`.
 
-This library is only compartible with version 3 of `@tableland/sdk`.
+This library is only compatible with version 3 of `@tableland/sdk`.
 
 # Table of Contents
 
