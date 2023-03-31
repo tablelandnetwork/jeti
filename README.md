@@ -1,3 +1,7 @@
+# **Deprecated**
+
+This repository is no longer actively maintained and is deprecated.
+
 # @tableland/jeti (JavaScript Extension for Tableland and IPFS)
 
 [![Lint and test](https://github.com/tablelandnetwork/js-tableland/actions/workflows/lint-and-test.yml/badge.svg)](https://github.com/tablelandnetwork/js-tableland/actions/workflows/lint-and-test.yml)
@@ -5,10 +9,11 @@
 [![Release](https://img.shields.io/github/release/tablelandnetwork/js-tableland.svg)](https://github.com/tablelandnetwork/js-tableland/releases/latest)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg)](https://github.com/RichardLitt/standard-readme)
 
-A TypeScript/JavaScript library for inserting and extracting IPFS data to and from Tableland queries using the `@tableland/sdk`. 
+A TypeScript/JavaScript library for inserting and extracting IPFS data to and from Tableland queries using the `@tableland/sdk`.
 
 # Table of Contents
 
+- [**Deprecated**](#deprecated)
 - [@tableland/jeti (JavaScript Extension for Tableland and IPFS)](#tablelandjeti-javascript-extension-for-tableland-and-ipfs)
 - [Table of Contents](#table-of-contents)
 - [Background](#background)
@@ -47,25 +52,25 @@ import { prepare, resolve } from "@tableland/jeti";
 
 const connection = await connect({ network: "testnet" });
 
-
-
 let id = connection.create(
   prepare`CREATE TABLE table (id int primary key, name text, avatar_cid text, primary key (id))`
 );
 
-const avatar = new Blob([/* avatar img file contents here */]);
+const avatar = new Blob([
+  /* avatar img file contents here */
+]);
 
-let preparedQuery = await prepare`INSERT INTO Table_01 (firstname, avatar) VALUES ('Murray', ${avatar});`;
+let preparedQuery =
+  await prepare`INSERT INTO Table_01 (firstname, avatar) VALUES ('Murray', ${avatar});`;
 
 let receipt = connect.query(preparedQuery);
 
-const { rows, columns } = await resolve(receipt, ['avatar']); 
-// Instead of containing the CID from the database, 
+const { rows, columns } = await resolve(receipt, ["avatar"]);
+// Instead of containing the CID from the database,
 // 'row' now contains the actual content as an AsyncIterator of a UINT8Array
-
 ```
 
-Fun fact: If you're using JETI in the browser with your local IPFS node, you'll need to change your HTTPHeaders Accessn control policy, like so: 
+Fun fact: If you're using JETI in the browser with your local IPFS node, you'll need to change your HTTPHeaders Accessn control policy, like so:
 
 ```
 ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "POST", "GET"]'
@@ -78,11 +83,11 @@ ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin  '["*"]'
 
 ## Connecting to Tableland
 
-The `@tableland/sdk` library includes functions for connecting to remote clients, creating and mutating tables, querying existing tables, and listing all user tables. 
+The `@tableland/sdk` library includes functions for connecting to remote clients, creating and mutating tables, querying existing tables, and listing all user tables.
 
 The `prepare` function can be used to prepare a statement, while simultaniously uploading files to your remote pinning services.
 
-With `resolve`, the user fetches data from IPFS into the result set. 
+With `resolve`, the user fetches data from IPFS into the result set.
 
 # Feedback
 
@@ -90,7 +95,6 @@ Reach out with feedback and ideas:
 
 - [twitter.com/tableland\_\_](https://twitter.com/tableland__)
 - [Create a new issue](https://github.com/tablelandnetwork/js-tableland/issues)
-
 
 # Maintainers
 
