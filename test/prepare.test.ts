@@ -1,3 +1,8 @@
-test("Does it work", () => {
-  expect(1).toBe(1);
+import { describe, test } from "mocha";
+import { match } from "sinon";
+
+describe('prepare', () => {
+  test("should prepare the test", () => {
+    match(() => true, "should be true");
+  });
 });
