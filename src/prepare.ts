@@ -14,7 +14,7 @@ function zip(firstArray: string[], secondArray: string[]) {
   return str;
 }
 
-type FileContent = Uint8Array | Blob;
+type FileContent = Uint8Array;
 // ipfs.add all supports these:
 // May add support later.
 // | String
@@ -37,7 +37,8 @@ async function sendToPinned(content: FileContent, _name = null) {
     if (_name) {
       path = `/${_name}`;
     }
-    const res = await ipfs.add(
+
+    const res = await ipfs.add(    
       { content, path },
       { wrapWithDirectory: path !== "" }
     );
