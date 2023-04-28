@@ -62,6 +62,7 @@
     "@types/sinon": "^10.0.14",
     "add-js-extension": "^1.0.4",
     "esbuild": "^0.17.18",
+    "eslint": "^8.39.0",
     "ipfs-http-client": "^56.0.3",
     "ts-node": "^10.9.1"
   },
