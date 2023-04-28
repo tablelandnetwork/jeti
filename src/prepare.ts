@@ -42,12 +42,12 @@ async function sendToPinned(content: FileContent, _name = null) {
       { wrapWithDirectory: path !== "" }
     );
     const { cid } = res;
-    ipfs.pin.remote
+    await ipfs.pin.remote
       .add(cid, {
         service: pinningServices[0].service,
         name: "Tableland Upload",
       })
-      .catch((err) => {
+      .catch((err: any) => {
         const message: string = err.message;
         if (message.includes("DUPLICATE_OBJECT")) {
           console.log(
