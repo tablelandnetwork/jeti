@@ -1,5 +1,4 @@
 import { globalIpfsClient } from "./ipfs-http-client-setup.js";
-import { Blob } from "node:buffer";
 
 function zip(firstArray: string[], secondArray: string[]) {
   let str = "";
@@ -71,9 +70,6 @@ async function prepare(strings: TemplateStringsArray, ...values: any[]) {
   const prom = values.map(async (value): Promise<string> => {
     let res = value;
     switch (true) {
-      case value instanceof Blob:
-        res = await sendToPinned(await value.arrayBuffer(), value.name);
-        break;
       case value instanceof Uint8Array:
         res = await sendToPinned(value);
         break;
