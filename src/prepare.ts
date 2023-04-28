@@ -1,4 +1,5 @@
 import { globalIpfsClient } from "./ipfs-http-client-setup.js";
+import { Blob } from "node:buffer";
 
 function zip(firstArray: string[], secondArray: string[]) {
   let str = "";
