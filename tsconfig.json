@@ -21,7 +21,7 @@
     "outDir": "./dist/esm/",
     "types": [
       "node",
-      "jest"
+      "mocha"
     ],
     "lib": [
       "ES6",

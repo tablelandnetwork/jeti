@@ -44,30 +44,54 @@ npm i @tableland/jeti
 Most common Tableland usage patterns will follow something like the following. In general, you'll need to connect, create, mutate, and query your tables. In that order :)
 
 ```typescript
-import { connect } from "@tableland/sdk";
+import { Database } from "@tableland/sdk";
 import { prepare, resolve } from "@tableland/jeti";
 
-const connection = await connect({ network: "testnet" });
+interface Schema {
+  id: number;
+  name: string;
+}
 
-let id = connection.create(
-  prepare`CREATE TABLE table (id int primary key, name text, avatar_cid text, primary key (id))`
-);
+addEventListener("fetch", (event) => {
+  event.respondWith(handleRequest(event.request));
+});
 
-const avatar = new Blob([
-  /* avatar img file contents here */
-]);
+async function handleRequest(request: Request): Promise<Response> {
+  // Default to grabbing a wallet connection in a browser
+  const db = new Database<Schema>();
 
-let preparedQuery =
-  await prepare`INSERT INTO Table_01 (firstname, avatar) VALUES ('Murray', ${avatar});`;
+  // This is the table's `prefix`; a custom table value prefixed as part of the table's name
+  const prefix: string = "my_sdk_table";
 
-let receipt = connect.query(preparedQuery);
+  const { meta: create } = await db
+    .prepare(
+      `CREATE TABLE ${prefix} (id integer primary key, name text, avatar_cid text);`
+    )
+    .run();
 
-const { rows, columns } = await resolve(receipt, ["avatar"]);
-// Instead of containing the CID from the database,
-// 'row' now contains the actual content as an AsyncIterator of a UINT8Array
+  // The table's `name` is in the format `{prefix}_{chainId}_{tableId}`
+  console.log(create.txn?.name); // e.g., my_sdk_table_80001_311
+
+  const avatar = new Blob([
+    /* avatar img file contents here */
+  ]);
+
+  const preparedQuery =
+    await prepare`INSERT INTO ${create.txn?.name} (name, avatar_cid) VALUES ('Murray', ${avatar});`;
+
+  const receipt = await db.query(preparedQuery);
+
+  const { rows, columns } = await resolve(receipt, ["avatar_cid"]);
+  // Instead of containing the CID from the database,
+  // 'row' now contains the actual content as an AsyncIterator of a UINT8Array
+
+  return new Response(JSON.stringify({ rows, columns }), {
+    headers: { "content-type": "application/json" }
+  });
+}
 ```
 
-Fun fact: If you're using JETI in the browser with your local IPFS node, you'll need to change your HTTPHeaders Accessn control policy, like so:
+Fun fact: If you're using JETI in the browser with your local IPFS node, you'll need to change your HTTPHeaders Access control policy, like so:
 
 ```
 ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "POST", "GET"]'
