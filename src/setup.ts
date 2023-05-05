@@ -1,6 +1,8 @@
 import { defaultPin } from "./defaultPinFunction";
+import * as IPFS from 'ipfs-http-client';
 
 let globalPinFunction: Pin = defaultPin;
+let globalIpfsClient = IPFS.create();
 
 interface Pin {
   (content: Uint8Array, _name: string | null): Promise<{
@@ -19,4 +21,4 @@ function setup(options: SetupOptions) {
     globalPinFunction = options.pin;
 }
 
-export { setup, globalPinFunction };
+export { setup, globalPinFunction, globalIpfsClient };

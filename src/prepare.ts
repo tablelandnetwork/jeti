@@ -27,7 +27,7 @@ async function prepare(strings: TemplateStringsArray, ...values: any[]) {
         res = await globalPinFunction(value, null);
         break;
     }
-    return res;
+    return res.cid;
   });
 
   const processedValues = await Promise.all(prom);
