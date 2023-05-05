@@ -1,4 +1,4 @@
-import { globalIpfsClient } from "./ipfs-http-client-setup.js";
+import { globalIpfsClient } from "./setup.js";
 
 // New type definitions
 interface ResultRow {

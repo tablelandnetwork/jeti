@@ -49,7 +49,7 @@
     "build:esbuild": "esbuild src/main.ts --bundle --minify --external:node:* --sourcemap=external --outfile=dist/esbuild/main.js --format=esm  && node ./node_modules/add-js-extension/dist/bin.js ./dist/esm --once",
     "build:dev": "esbuild src/main.ts --bundle --outfile=dist/esbuild/main.js --format=esm --sourcemap=inline",
     "build:watch": "esbuild src/main.ts --bundle --watch --outfile=dist/esbuild/main.js --format=esm && node ./node_modules/add-js-extension/dist/bin.js ./dist/esm --once",
-    "build:all": "npm run build:esm && npm run build:cjs && npm run build:esbuild && ./fixup.sh",
+    "build:all": "npm run build:esm && npm run build:cjs && npm run build:esbuild && sh ./fixup.sh",
     "prepublishOnly": "npm run build:all"
   },
   "devDependencies": {
