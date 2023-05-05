@@ -1,9 +1,6 @@
 import { defaultPin } from "./defaultPinFunction";
 import * as IPFS from 'ipfs-http-client';
 
-let globalPinFunction: Pin = defaultPin;
-let globalIpfsClient = IPFS.create();
-
 interface Pin {
   (content: Uint8Array, _name: string | null): Promise<{
     cid: string,
@@ -11,6 +8,8 @@ interface Pin {
   }>;
 }
 
+let globalPinFunction: Pin = defaultPin;
+const globalIpfsClient = IPFS.create();
 
 interface SetupOptions {
   pin?: Pin
