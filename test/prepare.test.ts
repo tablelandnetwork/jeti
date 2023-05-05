@@ -1,6 +1,6 @@
 import { describe, test } from "mocha";
 import { assert } from "sinon";
-import { optionalSetup } from "../src/ipfs-http-client-setup.js";
+import { setup } from "../src/setup";
 import { prepare } from '../src/main';
 import { ipfs } from './mocks';
 import fetch, { Headers, Request, Response } from "node-fetch";
@@ -15,7 +15,16 @@ if (!globalThis.fetch) {
 describe('prepare', () => {
 
   before(() => {
-    optionalSetup(ipfs() as any); 
+    setup({
+      ipfsClient: ipfs() as any,
+      pin: async (content) => {
+        console.log(content)
+        return {
+          cid: "ipfs://bafy",
+          pinned: true
+        }
+      }
+    }); 
   });
 
   test("should prepare the test", async () => {

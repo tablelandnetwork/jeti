@@ -9,13 +9,16 @@ interface Pin {
 }
 
 let globalPinFunction: Pin = defaultPin;
-const globalIpfsClient = IPFS.create();
+let globalIpfsClient = IPFS.create();
 
 interface SetupOptions {
-  pin?: Pin
+  pin?: Pin,
+  ipfsClient: IPFS.IPFSHTTPClient
 }
 
 function setup(options: SetupOptions) {
+  if(options.ipfsClient) 
+    globalIpfsClient = options.ipfsClient
   if(options.pin)
     globalPinFunction = options.pin;
 }

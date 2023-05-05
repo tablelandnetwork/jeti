@@ -1,6 +1,6 @@
 import { describe, test } from "mocha";
 import { assert } from "sinon";
-import { optionalSetup } from "../src/ipfs-http-client-setup.js";
+import { setup } from "../src/setup";
 import { resolve } from '../src/main';
 import { ipfs } from './mocks';
 import fetch, { Headers, Request, Response } from "node-fetch";
@@ -15,7 +15,9 @@ if (!globalThis.fetch) {
 describe('resolve', () => {
 
   before(() => {
-    optionalSetup(ipfs() as any); 
+    setup({
+      ipfsClient:ipfs() as any  
+    }); 
   });
 
   test("Should resolve to value", async () => {
