@@ -13,7 +13,7 @@ function zip(firstArray: string[], secondArray: string[]) {
   return str;
 }
 
-type FileContent = Uint8Array | Blob;
+type FileContent = Uint8Array;
 // ipfs.add all supports these:
 // May add support later.
 // | String
@@ -36,17 +36,18 @@ async function sendToPinned(content: FileContent, _name = null) {
     if (_name) {
       path = `/${_name}`;
     }
-    const res = await ipfs.add(
+
+    const res = await ipfs.add(    
       { content, path },
       { wrapWithDirectory: path !== "" }
     );
     const { cid } = res;
-    ipfs.pin.remote
+    await ipfs.pin.remote
       .add(cid, {
         service: pinningServices[0].service,
         name: "Tableland Upload",
       })
-      .catch((err) => {
+      .catch((err: any) => {
         const message: string = err.message;
         if (message.includes("DUPLICATE_OBJECT")) {
           console.log(
@@ -69,9 +70,6 @@ async function prepare(strings: TemplateStringsArray, ...values: any[]) {
   const prom = values.map(async (value): Promise<string> => {
     let res = value;
     switch (true) {
-      case value instanceof Blob:
-        res = await sendToPinned(await value.arrayBuffer(), value.name);
-        break;
       case value instanceof Uint8Array:
         res = await sendToPinned(value);
         break;

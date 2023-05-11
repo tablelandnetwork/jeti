@@ -1,6 +1,11 @@
 name: Lint and test
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
 
 jobs:
   build_and_test:
@@ -8,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        nodejs: [14]
+        nodejs: [16, 18]
 
     steps:
       - uses: actions/checkout@v2
