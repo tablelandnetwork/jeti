@@ -1,4 +1,4 @@
-import createProcess from "../process";
+import createProcessor from "../process";
 
 async function truncate(value: string) {
   if(typeof(value)!=="string") {
@@ -11,5 +11,5 @@ async function detruncate(value: string) {
   return value + "..." + "Yo, truncating is lossy, so you can't get the original back.";
 }
 
-export default createProcess(truncate, detruncate);
+export default createProcessor(truncate, detruncate);
 

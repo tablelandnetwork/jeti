@@ -1,6 +1,6 @@
 import { describe, test } from "mocha";
 import { assert } from "sinon";
-import { createProcess, encrypt } from "../src/main";
+import { createProcessor, encrypt } from "../src/main";
 import fetch, { Headers, Request, Response } from "node-fetch";
 
 if (!globalThis.fetch) {
@@ -17,7 +17,7 @@ describe('prepare', () => {
 
 
 
-    const b64 = createProcess((value: string) => {return btoa(value)}, (cell: string | number) => {return atob(cell.toString())})
+    const b64 = createProcessor((value: string) => {return btoa(value)}, (cell: string | number) => {return atob(cell.toString())})
 
     const createdStatement = await b64`INSERT INTO table_1_1 (message, recipient) VALUES ('${'Hello World'}', '${'John Doe'}');`;
 

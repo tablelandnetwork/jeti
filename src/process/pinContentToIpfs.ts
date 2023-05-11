@@ -1,5 +1,5 @@
 import * as IPFS from "ipfs-http-client";
-import createProcess from "../process";
+import createProcessor from "../process";
 type FileContent = Uint8Array;
 
 async function pinToLocalBase(content: FileContent) {
@@ -66,5 +66,5 @@ async function resolveCid(cid: string) {
   return res;
 }
 
-export const pinToLocal = createProcess(pinToLocalBase, resolveCid);
-export const pinToProvider = createProcess(pinToProviderBase, resolveCid);
+export const pinToLocal = createProcessor(pinToLocalBase, resolveCid);
+export const pinToProvider = createProcessor(pinToProviderBase, resolveCid);

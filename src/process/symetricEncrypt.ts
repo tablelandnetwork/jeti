@@ -1,6 +1,6 @@
 // Example with configuration
 import CryptoJS from "crypto-js";
-import createProcess from "../process";
+import createProcessor from "../process";
 
 export default (secret: string) => {
   const encrypt = (value: string) => {
@@ -11,5 +11,5 @@ export default (secret: string) => {
     return CryptoJS.AES.decrypt(value, secret).toString(CryptoJS.enc.Utf8);
   }
 
-  return createProcess(encrypt, decrypt)
+  return createProcessor(encrypt, decrypt)
 };

@@ -17,7 +17,7 @@ export interface RowObject {
   [key: string]: string | number;
 }
 
-export default function createProcess(customProcessor: Function, resolver: Function) {
+export default function createProcessor(customProcessor: Function, resolver: Function) {
   const prepare = async function prepare(strings: TemplateStringsArray, ...values: any[]) {
     const strings2 = Array.from(strings);
   
@@ -60,4 +60,4 @@ export default function createProcess(customProcessor: Function, resolver: Funct
 
 
 
-export { createProcess };
+export { createProcessor };
