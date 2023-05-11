@@ -1,6 +1,6 @@
 import { describe, test } from "mocha";
 import { assert } from "sinon";
-import { createProcessor, encrypt } from "../src/main";
+import { createProcessor, symetricEncrypt } from "../src/main";
 import fetch, { Headers, Request, Response } from "node-fetch";
 
 if (!globalThis.fetch) {
@@ -43,7 +43,7 @@ describe("prepare", () => {
   });
 
   test("Built in encrypt example encrypts and decrypts", async () => {
-    const encyptor = encrypt("symetric-secret");
+    const encyptor = symetricEncrypt("symetric-secret");
 
     const createdStatement =
       await encyptor`INSERT INTO table_31337_1 (message, recipient) VALUES ('${"Hello World"}', '${"John Doe"}');`;
