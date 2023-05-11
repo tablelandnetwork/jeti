@@ -1,5 +1,3 @@
-import { init } from "@tableland/sqlparser";
-
 function zip(firstArray: string[], secondArray: string[]) {
   let str = "";
   for (let i = 0; i < firstArray.length; i++) {
@@ -20,7 +18,6 @@ export interface RowObject {
 }
 
 export default function createProcess(customProcessor: Function, resolver: Function) {
-  init();
   const prepare = async function prepare(strings: TemplateStringsArray, ...values: any[]) {
     const strings2 = Array.from(strings);
   
@@ -35,9 +32,6 @@ export default function createProcess(customProcessor: Function, resolver: Funct
   
     const processedValues = await Promise.all(prom);
     const statementAfterProcessing = zip(strings2, processedValues);
-
-    // This is only to validate
-    await global.sqlparser.normalize(statementAfterProcessing);
 
     return statementAfterProcessing;
   }
