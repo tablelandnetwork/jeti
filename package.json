@@ -65,6 +65,7 @@
   },
   "dependencies": {
     "@tableland/sdk": "^4.1.0",
+    "@tableland/sqlparser": "^1.0.6",
     "@types/sinon": "^10.0.14",
     "add-js-extension": "^1.0.4",
     "crypto-js": "^4.1.1",

@@ -19,9 +19,9 @@ describe('prepare', () => {
 
     const b64 = createProcess((value: string) => {return btoa(value)}, (cell: string | number) => {return atob(cell.toString())})
 
-    const createdStatement = await b64`INSERT INTO table (message, recipient) VALUES ('${'Hello World'}', '${'John Doe'}');`;
+    const createdStatement = await b64`INSERT INTO table_1_1 (message, recipient) VALUES ('${'Hello World'}', '${'John Doe'}');`;
 
-    assert.match(createdStatement, "INSERT INTO table (message, recipient) VALUES ('SGVsbG8gV29ybGQ=', 'Sm9obiBEb2U=');");
+    assert.match(createdStatement, "INSERT INTO table_1_1 (message, recipient) VALUES ('SGVsbG8gV29ybGQ=', 'Sm9obiBEb2U=');");
 
     const resultSet = [ 
       { column: "SGVsbG8gV29ybGQ=", otherColumn: "SGVsbG8gV29ybGQ=" },
@@ -40,9 +40,9 @@ describe('prepare', () => {
   test("Built in encrypt example encrypts and decrypts", async () => {
     const encyptor = encrypt("symetric-secret");
 
-    const createdStatement = await encyptor`INSERT INTO table (message, recipient) VALUES ('${'Hello World'}', '${'John Doe'}');`;
+    const createdStatement = await encyptor`INSERT INTO table_31337_1 (message, recipient) VALUES ('${'Hello World'}', '${'John Doe'}');`;
     const [world, john] = createdStatement.matchAll(/U2FsdGVkX[0-9a-zA-Z\/+=]+/g);
-    assert.match(createdStatement, `INSERT INTO table (message, recipient) VALUES ('${world}', '${john}');`);
+    assert.match(createdStatement, `INSERT INTO table_31337_1 (message, recipient) VALUES ('${world}', '${john}');`);
 
     const results = await encyptor.resolve([
       { message: world.toString(), recipient: john.toString() }

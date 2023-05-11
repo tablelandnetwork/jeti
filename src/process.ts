@@ -1,3 +1,5 @@
+import { init } from "@tableland/sqlparser";
+
 function zip(firstArray: string[], secondArray: string[]) {
   let str = "";
   for (let i = 0; i < firstArray.length; i++) {
@@ -8,6 +10,8 @@ function zip(firstArray: string[], secondArray: string[]) {
     }
   }
 
+
+
   return str;
 }
 
@@ -16,11 +20,13 @@ export interface RowObject {
 }
 
 export default function createProcess(customProcessor: Function, resolver: Function) {
+  init();
   const prepare = async function prepare(strings: TemplateStringsArray, ...values: any[]) {
     const strings2 = Array.from(strings);
   
     const prom = values.map(async (value): Promise<string> => {
       const result = await customProcessor(value);
+      
       if(typeof(result) !== 'string') {
         throw new Error("Defined process function resulted in content that is not a string.");
       }
@@ -28,7 +34,12 @@ export default function createProcess(customProcessor: Function, resolver: Funct
     });
   
     const processedValues = await Promise.all(prom);
-    return zip(strings2, processedValues);
+    const statementAfterProcessing = zip(strings2, processedValues);
+
+    // This is only to validate
+    await global.sqlparser.normalize(statementAfterProcessing);
+
+    return statementAfterProcessing;
   }
 
   prepare.resolve = async function resolve(resultSet: RowObject[], keysToResolve: string[]) {
