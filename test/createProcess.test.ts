@@ -41,7 +41,7 @@ describe('prepare', () => {
     const encyptor = encrypt("symetric-secret");
 
     const createdStatement = await encyptor`INSERT INTO table_31337_1 (message, recipient) VALUES ('${'Hello World'}', '${'John Doe'}');`;
-    const [world, john] = createdStatement.matchAll(/U2FsdGVkX[0-9a-zA-Z\/+=]+/g);
+    const [world, john] = createdStatement.matchAll(/U2FsdGVkX[0-9a-zA-Z/+=]+/g);
     assert.match(createdStatement, `INSERT INTO table_31337_1 (message, recipient) VALUES ('${world}', '${john}');`);
 
     const results = await encyptor.resolve([
