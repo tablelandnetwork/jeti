@@ -86,7 +86,7 @@ async function handleRequest(request: Request): Promise<Response> {
   // 'row' now contains the actual content as an AsyncIterator of a UINT8Array
 
   return new Response(JSON.stringify({ rows, columns }), {
-    headers: { "content-type": "application/json" }
+    headers: { "content-type": "application/json" },
   });
 }
 ```

@@ -8,13 +8,11 @@ async function pinToLocalBase(content: FileContent) {
 
 async function pinToProviderBase(content: FileContent) {
   // TODO: Allow passing in the provider's endpoint
-  return await pin(content, 'provider');
+  return await pin(content, "provider");
 }
 
-async function pin(content: FileContent, where = 'local') {
-
-
-  if(typeof content === 'string') return content;
+async function pin(content: FileContent, where = "local") {
+  if (typeof content === "string") return content;
   const ipfs = await IPFS.create();
 
   const pinningServices = await ipfs.pin.remote.service.ls();
@@ -27,18 +25,16 @@ async function pin(content: FileContent, where = 'local') {
   } else {
     const path = "";
 
-
-    const res = await ipfs.add(    
+    const res = await ipfs.add(
       { content, path },
       { wrapWithDirectory: path !== "" }
     );
     const { cid } = res;
 
-    if(where === 'local') {
+    if (where === "local") {
       await ipfs.pin.add(cid);
     } else {
-      await ipfs.pin
-      .remote
+      await ipfs.pin.remote
         .add(cid, {
           service: pinningServices[0].service,
           name: "Tableland Upload",
@@ -56,7 +52,6 @@ async function pin(content: FileContent, where = 'local') {
     }
 
     return cid.toV1().toString();
-
   }
 }
 
