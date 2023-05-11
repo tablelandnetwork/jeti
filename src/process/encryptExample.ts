@@ -4,7 +4,7 @@ import createProcess from "../process";
 
 export default (secret: string) => {
   const encrypt = (value: string) => {
-    return CryptoJS.AES.encrypt(value, secret).toString();;
+    return CryptoJS.AES.encrypt(value, secret).toString();
   }
   
   const decrypt = (value: string) => {

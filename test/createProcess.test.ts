@@ -1,6 +1,6 @@
 import { describe, test } from "mocha";
 import { assert } from "sinon";
-import { createProcess } from "../src/main";
+import { createProcess, encrypt } from "../src/main";
 import fetch, { Headers, Request, Response } from "node-fetch";
 
 if (!globalThis.fetch) {
@@ -34,7 +34,22 @@ describe('prepare', () => {
     assert.match(resultFromResolver[0].otherColumn, "SGVsbG8gV29ybGQ=");
     assert.match(resultFromResolver[1].column, "John Doe");
     assert.match(resultFromResolver[1].otherColumn, "Sm9obiBEb2U=");
-    
+
+  });
+
+  test("Built in encrypt example encrypts and decrypts", async () => {
+    const encyptor = encrypt("symetric-secret");
+
+    const createdStatement = await encyptor`INSERT INTO table (message, recipient) VALUES ('${'Hello World'}', '${'John Doe'}');`;
+    const [world, john] = createdStatement.matchAll(/U2FsdGVkX[0-9a-zA-Z\/+=]+/g);
+    assert.match(createdStatement, `INSERT INTO table (message, recipient) VALUES ('${world}', '${john}');`);
+
+    const results = await encyptor.resolve([
+      { message: world.toString(), recipient: john.toString() }
+    ], ["message", "recipient"]);
+
+    assert.match(results[0].message, "Hello World");
+    assert.match(results[0].recipient, "John Doe");
 
   });
 
