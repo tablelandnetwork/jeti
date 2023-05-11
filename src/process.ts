@@ -31,7 +31,7 @@ export default function createProcess(customProcessor: Function, resolver: Funct
     return zip(strings2, processedValues);
   }
 
-  prepare.resolve = async function resolve(resultSet: [], keysToResolve: string[]) {
+  prepare.resolve = async function resolve(resultSet: RowObject[], keysToResolve: string[]) {
 
     const resultsRequests = resultSet.map(async (row: Record<string, any>) => {
       const resolvedRow: RowObject = {};
