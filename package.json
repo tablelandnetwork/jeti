@@ -68,13 +68,11 @@
     "@tableland/sqlparser": "^1.0.6",
     "@types/sinon": "^10.0.14",
     "add-js-extension": "^1.0.4",
-    "crypto-js": "^4.1.1",
-    "cryptr": "^6.2.0",
+    "crypto-js": "3.1.9-1",
     "esbuild": "^0.17.18",
     "eslint": "^8.39.0",
     "ipfs-http-client": "^56.0.3",
     "node-fetch": "^3.3.1",
-    "simple-crypto-js": "2.3.1",
     "ts-node": "^10.9.1"
   },
   "contributors": [
