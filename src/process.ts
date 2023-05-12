@@ -15,6 +15,13 @@ export interface RowObject {
   [key: string]: string | number;
 }
 
+export function skip(value: string) {
+  return {
+    jetiShouldSkip: true,
+    original: value,
+  };
+}
+
 export default function createProcessor(
   customProcessor: Function,
   resolver: Function
@@ -26,6 +33,9 @@ export default function createProcessor(
     const strings2 = Array.from(strings);
 
     const prom = values.map(async (value): Promise<string> => {
+      if (!value.jetiShouldSkip) {
+        return value.original;
+      }
       const result = await customProcessor(value);
 
       if (typeof result !== "string") {
