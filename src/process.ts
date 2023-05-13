@@ -33,7 +33,7 @@ export default function createProcessor(
     const strings2 = Array.from(strings);
 
     const prom = values.map(async (value): Promise<string> => {
-      if (!value.jetiShouldSkip) {
+      if (value.jetiShouldSkip) {
         return value.original;
       }
       const result = await customProcessor(value);
