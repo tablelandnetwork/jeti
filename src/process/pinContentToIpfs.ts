@@ -12,7 +12,6 @@ async function pinToProviderBase(content: FileContent) {
 }
 
 async function pin(content: FileContent, where = "local") {
-  if (typeof content === "string") return content;
   const ipfs = await IPFS.create();
 
   const pinningServices = await ipfs.pin.remote.service.ls();
