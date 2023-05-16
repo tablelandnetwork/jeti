@@ -1,3 +1,4 @@
-export { prepare } from "./prepare.js";
-export { resolve } from "./resolve.js";
-export { optionalSetup } from "./ipfs-http-client-setup.js";
+export { default as createProcessor } from "./process.js";
+export { pinToLocal, pinToProvider } from "./process/pinContentToIpfs.js";
+export { default as truncate } from "./process/truncate.js";
+export { default as symetricEncrypt } from "./process/symetricEncrypt.js";

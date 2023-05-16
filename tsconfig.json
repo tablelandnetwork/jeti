@@ -19,21 +19,12 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "outDir": "./dist/esm/",
-    "types": [
-      "node",
-      "mocha"
-    ],
-    "lib": [
-      "ES6",
-      "DOM",
-    ]
+    "types": ["node", "mocha"],
+    "lib": ["ES6", "DOM"]
   },
   "include": [
-    "src/**/*.ts",
+    "src/**/*.ts"
     // "test/setupTest.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts"
-  ]
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

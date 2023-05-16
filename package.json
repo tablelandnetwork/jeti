@@ -39,6 +39,7 @@
   ],
   "scripts": {
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "npm run lint -- --fix",
     "test": "mocha",
     "clean": "rm -rf dist build package",
     "ts-node": "ts-node",
@@ -49,13 +50,17 @@
     "build:esbuild": "esbuild src/main.ts --bundle --minify --external:node:* --sourcemap=external --outfile=dist/esbuild/main.js --format=esm  && node ./node_modules/add-js-extension/dist/bin.js ./dist/esm --once",
     "build:dev": "esbuild src/main.ts --bundle --outfile=dist/esbuild/main.js --format=esm --sourcemap=inline",
     "build:watch": "esbuild src/main.ts --bundle --watch --outfile=dist/esbuild/main.js --format=esm && node ./node_modules/add-js-extension/dist/bin.js ./dist/esm --once",
-    "build:all": "npm run build:esm && npm run build:cjs && npm run build:esbuild && ./fixup.sh",
-    "prepublishOnly": "npm run build:all"
+    "build": "npm run build:esm && npm run build:cjs && npm run build:esbuild && sh ./fixup.sh",
+    "prepublishOnly": "npm run build",
+    "prettier": "prettier \"**/*.{ts,json,md}\" --check",
+    "prettier:fix": "npm run prettier -- --write",
+    "format": "npm run prettier:fix && npm run lint:fix"
   },
   "devDependencies": {
-    "@types/mocha": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.59.1",
-    "@typescript-eslint/parser": "^5.59.1",
+    "@types/crypto-js": "^4.1.1",
+    "@types/mocha": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
+    "@typescript-eslint/parser": "^5.59.6",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-standard": "^17.0.0",
     "mocha": "^10.0.0",
@@ -64,12 +69,16 @@
   },
   "dependencies": {
     "@tableland/sdk": "^4.1.0",
+    "@tableland/sqlparser": "^1.0.6",
     "@types/sinon": "^10.0.14",
     "add-js-extension": "^1.0.4",
+    "crypto-js": "3.1.9-1",
     "esbuild": "^0.17.18",
-    "eslint": "^8.39.0",
+    "eslint": "^8.40.0",
+    "eslint-plugin-import": "^2.27.5",
     "ipfs-http-client": "^56.0.3",
     "node-fetch": "^3.3.1",
+    "prettier": "^2.8.8",
     "ts-node": "^10.9.1"
   },
   "contributors": [

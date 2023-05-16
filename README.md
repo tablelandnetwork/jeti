@@ -1,4 +1,4 @@
-# @tableland/jeti (JavaScript Extension for Tableland and IPFS)
+# @tableland/jeti (JavaScript Extension for Tableland Integrations)
 
 [![Lint and test](https://github.com/tablelandnetwork/js-tableland/actions/workflows/lint-and-test.yml/badge.svg)](https://github.com/tablelandnetwork/js-tableland/actions/workflows/lint-and-test.yml)
 [![GitHub package.json version](https://img.shields.io/github/package-json/v/tablelandnetwork/js-tableland.svg)](./package.json)
@@ -11,7 +11,7 @@ This library is only compatible with version 3 of `@tableland/sdk`.
 
 # Table of Contents
 
-- [@tableland/jeti (JavaScript Extension for Tableland and IPFS)](#tablelandjeti-javascript-extension-for-tableland-and-ipfs)
+- [@tableland/jeti (JavaScript Extension for Tableland Integrations)](#tablelandjeti-javascript-extension-for-tableland-integrations)
 - [Table of Contents](#table-of-contents)
 - [Background](#background)
 - [Install](#install)
@@ -86,7 +86,7 @@ async function handleRequest(request: Request): Promise<Response> {
   // 'row' now contains the actual content as an AsyncIterator of a UINT8Array
 
   return new Response(JSON.stringify({ rows, columns }), {
-    headers: { "content-type": "application/json" }
+    headers: { "content-type": "application/json" },
   });
 }
 ```
