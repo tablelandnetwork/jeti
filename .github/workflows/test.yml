@@ -1,10 +1,16 @@
-name: Docs
+name: Test
 on:
   push:
     branches:
       - main
+  pull_request:
+
+concurrency:
+  group: test-${{github.ref}}
+  cancel-in-progress: true
+
 jobs:
-  docs:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
@@ -13,7 +19,7 @@ jobs:
           persist-credentials: false
 
       - name: Cache 📦
-        uses: actions/cache@v2
+        uses: actions/cache@v1
         with:
           path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -23,20 +29,15 @@ jobs:
             ${{ runner.os }}-
 
       - name: Setup Node Environment ⬢
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 18
 
-      - name: Install and Build 🔧
-        run: |
-          npm install
-          npm run build:all
-          npm run docs:html
-          touch docs/.nojekyll
+      - name: Install 🔧
+        run: npm install
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: docs
+      - name: Build 🛠
+        run: npm run build
+
+      - name: Test/Coverage 🧪
+        run: npm test
