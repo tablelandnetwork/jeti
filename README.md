@@ -30,7 +30,7 @@ Simply import the library, connect to the Tableland network, and you are ready t
 
 # Install
 
-Installation is easy using npm or yarn. An ES bundle is also available for those operating purely in a browser environnement.
+Installation is easy using npm or yarn. An ES bundle is also available for those operating purely in a browser environment.
 
 ```bash
 npm i @tableland/jeti
@@ -42,7 +42,7 @@ npm i @tableland/jeti
 
 ### Pin to IPFS
 
-In this example, using `pinToLocal` as a tagged template will insert the proper values in your statement, while simultaniously uploading files to your remote pinning services.
+In this example, using `pinToLocal` as a tagged template will insert the proper values in your statement, while simultaneously uploading files to your remote pinning services.
 
 Using the `resolve` function of `pinToLocal` fetches the data from IPFS into the result set.
 
