@@ -7,8 +7,6 @@
 
 A TypeScript/JavaScript library for inserting and extracting IPFS data to and from Tableland queries using the `@tableland/sdk`.
 
-This library is only compatible with version 3 of `@tableland/sdk`.
-
 # Table of Contents
 
 - [@tableland/jeti (JavaScript Extension for Tableland Integrations)](#tablelandjeti-javascript-extension-for-tableland-integrations)
@@ -16,8 +14,9 @@ This library is only compatible with version 3 of `@tableland/sdk`.
 - [Background](#background)
 - [Install](#install)
 - [Usage](#usage)
-- [API](#api)
-  - [Connecting to Tableland](#connecting-to-tableland)
+  - [Pin to IPFS](#pin-to-ipfs)
+  - [Create your own](#create-your-own)
+  - [More uses](#more-uses)
 - [Feedback](#feedback)
 - [Maintainers](#maintainers)
 - [Contributing](#contributing)
@@ -31,7 +30,7 @@ Simply import the library, connect to the Tableland network, and you are ready t
 
 # Install
 
-Installation is easy using npm or yarn. An ES bundle is also available for those operating purely in a browser environnement.
+Installation is easy using npm or yarn. An ES bundle is also available for those operating purely in a browser environment.
 
 ```bash
 npm i @tableland/jeti
@@ -41,80 +40,72 @@ npm i @tableland/jeti
 
 # Usage
 
-Most common Tableland usage patterns will follow something like the following. In general, you'll need to connect, create, mutate, and query your tables. In that order :)
+### Pin to IPFS
 
-```typescript
+In this example, using `pinToLocal` as a tagged template will insert the proper values in your statement, while simultaneously uploading files to your remote pinning services.
+
+Using the `resolve` function of `pinToLocal` fetches the data from IPFS into the result set.
+
+```JavaScript
 import { Database } from "@tableland/sdk";
-import { prepare, resolve } from "@tableland/jeti";
 
-interface Schema {
-  id: number;
-  name: string;
-}
+// For pinning to a local IPFS node
+import { pinToLocal, skip } from "@tableland/jeti";
 
-addEventListener("fetch", (event) => {
-  event.respondWith(handleRequest(event.request));
-});
+const db = new Database();
 
-async function handleRequest(request: Request): Promise<Response> {
-  // Default to grabbing a wallet connection in a browser
-  const db = new Database<Schema>();
+const query = await pinToLocal`INSERT INTO MyTable_31337_1 (id, file) values (1, '${file}');`
+// Result: INSERT INTO MyTable_31337_1 (id, file) values (id, 'ipfs://bafy...etc');
+// The pinToLocal also pinned the file to your local IPFS node.
 
-  // This is the table's `prefix`; a custom table value prefixed as part of the table's name
-  const prefix: string = "my_sdk_table";
+db.prepare(query).all();
 
-  const { meta: create } = await db
-    .prepare(
-      `CREATE TABLE ${prefix} (id integer primary key, name text, avatar_cid text);`
-    )
-    .run();
+// 1 block time later.
 
-  // The table's `name` is in the format `{prefix}_{chainId}_{tableId}`
-  console.log(create.txn?.name); // e.g., my_sdk_table_80001_311
+const resultSet = await db.prepare("SELECT * FROM MyTable_31337_1;").all();
 
-  const avatar = new Blob([
-    /* avatar img file contents here */
-  ]);
-
-  const preparedQuery =
-    await prepare`INSERT INTO ${create.txn?.name} (name, avatar_cid) VALUES ('Murray', ${avatar});`;
-
-  const receipt = await db.query(preparedQuery);
-
-  const { rows, columns } = await resolve(receipt, ["avatar_cid"]);
-  // Instead of containing the CID from the database,
-  // 'row' now contains the actual content as an AsyncIterator of a UINT8Array
-
-  return new Response(JSON.stringify({ rows, columns }), {
-    headers: { "content-type": "application/json" },
-  });
-}
-```
-
-Fun fact: If you're using JETI in the browser with your local IPFS node, you'll need to change your HTTPHeaders Access control policy, like so:
+// Only attempts to fetch 'file' column from IPFS
+const { rows, columns } = await pinToLocal.resolve(resultSet, ["file"]);
 
 ```
-ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "POST", "GET"]'
-ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin  '["*"]'
+
+### Create your own
+
+```JavaScript
+import { createProcessor } from '@tableland/jeti';
+
+import { createProcessor } from "@tableland/jeti";
+import { ipfsPin, ipfsFetch } from "some-custom-ipfs-lib";
+
+const ipfs = createProcessor(ipfsPin, ipfsFetch);
+
+const db = new Database();
+
+const message = getFile();
+const image = getImage();
+const query = await ipfs`
+INSERT
+  INTO MyTable_31337_1
+    (id, message, image)
+    values
+    (
+      0,
+      '${message}',
+      '${image}'
+    )`;
 ```
 
-# API
+This would use your implementations of the asynchronous functions which are used in the template. The functions can have side effects. The only rule is they might ultimately return a string.
 
-[Full library documentation available on GitHub](https://tablelandnetwork.github.io/js-tableland/)!
+### More uses
 
-## Connecting to Tableland
-
-The `@tableland/sdk` library includes functions for connecting to remote clients, creating and mutating tables, querying existing tables, and listing all user tables.
-
-The `prepare` function can be used to prepare a statement, while simultaniously uploading files to your remote pinning services.
-
-With `resolve`, the user fetches data from IPFS into the result set.
+More uses can be found in [our docs](https://docs.tableland.xyz)
 
 # Feedback
 
 Reach out with feedback and ideas:
 
-- [twitter.com/tableland\_\_](https://twitter.com/tableland__)
+- [twitter.com/tableland](https://twitter.com/tableland)
 - [Create a new issue](https://github.com/tablelandnetwork/js-tableland/issues)
 
 # Maintainers
