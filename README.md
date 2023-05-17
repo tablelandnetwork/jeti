@@ -95,7 +95,7 @@ INSERT
     )`;
 ```
 
-This would use your implementations of the asynchronous functions which are use in the template. The functions can have side effects. The only rule is they might ultimately return a string.
+This would use your implementations of the asynchronous functions which are used in the template. The functions can have side effects. The only rule is they might ultimately return a string.
 
 ### More uses
 
