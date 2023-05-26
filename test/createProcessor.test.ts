@@ -1,7 +1,7 @@
-import { rejects } from "node:assert/strict";
+import { equal, rejects } from "node:assert/strict";
 import { describe, test } from "mocha";
 import { assert } from "sinon";
-import { createProcessor, symetricEncrypt } from "../src/main";
+import { createProcessor, symetricEncrypt, skip } from "../src/main";
 
 describe("createProcessor", () => {
   test("Should create processor which converts to and resolves base 64 strings", async () => {
@@ -55,6 +55,20 @@ describe("createProcessor", () => {
 
     assert.match(results[0].message, "Hello World");
     assert.match(results[0].recipient, "John Doe");
+  });
+
+  test("should be able to skip", async function () {
+    const encyptor = symetricEncrypt("symetric-secret");
+
+    const partialEncrypt = JSON.parse(
+      await encyptor`{"encrypted": "${"encrypted"}", "plain": "${skip(
+        "plain"
+      )}"}`
+    );
+
+    console.log(partialEncrypt);
+    equal(partialEncrypt.plain, "plain");
+    equal(partialEncrypt.encrypted.slice(0, 10), "U2FsdGVkX1");
   });
 
   test("throws an error if processor does not return a string", async function () {
