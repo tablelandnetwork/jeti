@@ -17,7 +17,7 @@ export class Pinner {
   async pin(content: FileContent) {
     if (typeof content === "string") return content;
 
-    const pinningService = await this.#_getRemotePinningService()
+    const pinningService = await this.#_getRemotePinningService();
     const path = "";
 
     const { cid } = await this.ipfs.add(
@@ -73,6 +73,7 @@ export const pinToLocal = createProcessor(
 );
 // TODO: Allow passing in the provider's endpoint.
 //    How can this work if there's no way to set the provider?
+//    Can users create there own instance with custom ipfsOptions?
 export const pinToProvider = createProcessor(
   providerPinner.pin.bind(providerPinner),
   providerPinner.resolveCid.bind(providerPinner)

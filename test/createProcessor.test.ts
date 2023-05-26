@@ -70,7 +70,8 @@ describe("createProcessor", () => {
     const insertStatement = subtraddify`INSERT INTO subtradd_31337_1 (val) VALUES (${"1"});`;
     await rejects(insertStatement, {
       name: "Error",
-      message: "Defined processor function resulted in content that is not a string."
+      message:
+        "Defined processor function resulted in content that is not a string.",
     });
-  })
+  });
 });
