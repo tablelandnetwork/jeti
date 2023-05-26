@@ -15,6 +15,8 @@ export class Pinner {
   }
 
   async pin(content: FileContent) {
+    if (typeof content === "string") return content;
+
     const pinningService = await this.#_getRemotePinningService()
     const path = "";
 

@@ -15,7 +15,7 @@ describe("pinContentToIpfs", function () {
 
   const accounts = getAccounts();
   const db = getDatabase(accounts[1]);
-  const mockNode = MockIPFS.getLocal({debug: true});
+  const mockNode = MockIPFS.getLocal({debug: false});
 
   // Start & stop a mock ipfs node to reset state between each test
   beforeEach(async function () {
