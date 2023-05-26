@@ -1,4 +1,4 @@
-import createProcessor from "../process";
+import createProcessor from "../processor";
 
 async function truncate(value: string) {
   if (typeof value !== "string") {
