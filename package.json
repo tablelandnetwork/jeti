@@ -41,7 +41,7 @@
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "npm run lint -- --fix",
     "test": "mocha",
-    "coverage": "c8 --100 --exclude test mocha --exit",
+    "coverage": "TEST_TIMEOUT_FACTOR=3 c8 --100 --exclude test mocha --exit",
     "clean": "rm -rf dist build package",
     "ts-node": "ts-node",
     "docs": "typedoc --entryPoints src/main.ts",
@@ -69,7 +69,7 @@
     "mocha": "^10.0.0",
     "mockipfs": "^0.3.2",
     "sinon": "^15.0.4",
-    "typescript": "^4.2.3",
+    "typescript": "^5.0.4",
     "uint8arrays": "^4.0.3"
   },
   "dependencies": {
@@ -81,7 +81,7 @@
     "esbuild": "^0.17.18",
     "eslint": "^8.40.0",
     "eslint-plugin-import": "^2.27.5",
-    "ipfs-http-client": "^56.0.3",
+    "ipfs-http-client": "^60.0.1",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1"
   },
