@@ -15,6 +15,13 @@ export interface RowObject {
   [key: string]: string | number;
 }
 
+export function skip(value: string) {
+  return {
+    jetiShouldSkip: true,
+    original: value,
+  };
+}
+
 export default function createProcessor(
   customProcessor: Function,
   resolver: Function
@@ -26,11 +33,14 @@ export default function createProcessor(
     const strings2 = Array.from(strings);
 
     const prom = values.map(async (value): Promise<string> => {
+      if (value.jetiShouldSkip) {
+        return value.original;
+      }
       const result = await customProcessor(value);
 
       if (typeof result !== "string") {
         throw new Error(
-          "Defined process function resulted in content that is not a string."
+          "Defined processor function resulted in content that is not a string."
         );
       }
       return result;
@@ -46,8 +56,9 @@ export default function createProcessor(
     resultSet: RowObject[],
     keysToResolve: string[]
   ) {
-    const resultsRequests = resultSet.map(async (row: Record<string, any>) => {
-      const resolvedRow: RowObject = {};
+    const resultsRequests = resultSet.map(async (row: RowObject) => {
+      // needs to be `any` since the resolver is being plugged into this package
+      const resolvedRow: any = {};
       for (const key in row) {
         if (keysToResolve.includes(key)) {
           const value = row[key];

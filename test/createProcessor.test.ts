@@ -1,17 +1,10 @@
+import { equal, rejects } from "node:assert/strict";
 import { describe, test } from "mocha";
 import { assert } from "sinon";
-import { createProcessor, symetricEncrypt } from "../src/main";
-import fetch, { Headers, Request, Response } from "node-fetch";
+import { createProcessor, symetricEncrypt, skip } from "../src/main";
 
-if (!globalThis.fetch) {
-  (globalThis as any).fetch = fetch;
-  (globalThis as any).Headers = Headers;
-  (globalThis as any).Request = Request;
-  (globalThis as any).Response = Response;
-}
-
-describe("prepare", () => {
-  test("Should create process which converts to and resolves base 64 strings", async () => {
+describe("createProcessor", () => {
+  test("Should create processor which converts to and resolves base 64 strings", async () => {
     const b64 = createProcessor(
       (value: string) => {
         return btoa(value);
@@ -62,5 +55,37 @@ describe("prepare", () => {
 
     assert.match(results[0].message, "Hello World");
     assert.match(results[0].recipient, "John Doe");
+  });
+
+  test("should be able to skip", async function () {
+    const encyptor = symetricEncrypt("symetric-secret");
+
+    const partialEncrypt = JSON.parse(
+      await encyptor`{"encrypted": "${"encrypted"}", "plain": "${skip(
+        "plain"
+      )}"}`
+    );
+
+    console.log(partialEncrypt);
+    equal(partialEncrypt.plain, "plain");
+    equal(partialEncrypt.encrypted.slice(0, 10), "U2FsdGVkX1");
+  });
+
+  test("throws an error if processor does not return a string", async function () {
+    const subtraddify = createProcessor(
+      (value: string) => {
+        return Number(value) + 1;
+      },
+      (cell: string | number) => {
+        return Number(cell.toString()) - 1;
+      }
+    );
+
+    const insertStatement = subtraddify`INSERT INTO subtradd_31337_1 (val) VALUES (${"1"});`;
+    await rejects(insertStatement, {
+      name: "Error",
+      message:
+        "Defined processor function resulted in content that is not a string.",
+    });
   });
 });
