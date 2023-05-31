@@ -11,13 +11,17 @@ const getTimeoutFactor = function (): number {
 
 export const TEST_TIMEOUT_FACTOR = getTimeoutFactor();
 
+// show logs
 const lt = new LocalTableland({
-  silent: true,
+  silent: false,
 });
 
 before(async function () {
   this.timeout(TEST_TIMEOUT_FACTOR * 30000);
   await lt.start();
+  await new Promise(function (resolve) {
+    setTimeout(resolve, TEST_TIMEOUT_FACTOR * 1000);
+  });
 });
 
 after(async function () {
