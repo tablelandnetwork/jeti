@@ -7,14 +7,14 @@ describe("truncate", function () {
   this.timeout(TEST_TIMEOUT_FACTOR * 10000);
 
   test("should be able to truncate a string", async function () {
-    const longString = "the quick red fox jumped over the lazy brown dog";
+    const longString = "the quick red fox jumped over the lazy brown dog and will be truncated";
 
     const truncatedString = await truncate`${longString}`;
     equal(truncatedString, longString.slice(0, 10));
   });
 
   test("should append message when trying to de-truncate a string", async function () {
-    const longString = "the quick red fox jumped over the lazy brown dog";
+    const longString = "the quick red fox jumped over the lazy brown dog and will be truncated";
 
     const detruncatedString = await truncate.resolve(
       [{ val: `${longString}` }],
@@ -25,7 +25,7 @@ describe("truncate", function () {
       [
         longString,
         "...",
-        "Yo, truncating is lossy, so you can't get the original back.",
+        "Warning: the original value cannot be retrieved; truncating is lossy.",
       ].join("")
     );
   });

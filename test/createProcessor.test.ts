@@ -1,16 +1,17 @@
 import { equal, rejects } from "node:assert/strict";
+import { Buffer } from "buffer";
 import { describe, test } from "mocha";
 import { assert } from "sinon";
-import { createProcessor, symetricEncrypt, skip } from "../src/main";
+import { createProcessor, symmetricEncrypt, skip } from "../src/main";
 
 describe("createProcessor", () => {
   test("Should create processor which converts to and resolves base 64 strings", async () => {
     const b64 = createProcessor(
       (value: string) => {
-        return btoa(value);
+        return Buffer.from(value).toString('base64');
       },
-      (cell: string | number) => {
-        return atob(cell.toString());
+      (cell: string) => {
+        return Buffer.from(cell, 'base64').toString('utf8'); 
       }
     );
 
@@ -36,10 +37,10 @@ describe("createProcessor", () => {
   });
 
   test("Built in encrypt example encrypts and decrypts", async () => {
-    const encyptor = symetricEncrypt("symetric-secret");
+    const encrypter = symmetricEncrypt("symmetric-secret");
 
     const createdStatement =
-      await encyptor`INSERT INTO table_31337_1 (message, recipient) VALUES ('${"Hello World"}', '${"John Doe"}');`;
+      await encrypter`INSERT INTO table_31337_1 (message, recipient) VALUES ('${"Hello World"}', '${"John Doe"}');`;
     const [world, john] = createdStatement.matchAll(
       /U2FsdGVkX[0-9a-zA-Z/+=]+/g
     );
@@ -48,7 +49,7 @@ describe("createProcessor", () => {
       `INSERT INTO table_31337_1 (message, recipient) VALUES ('${world}', '${john}');`
     );
 
-    const results = await encyptor.resolve(
+    const results = await encrypter.resolve(
       [{ message: world.toString(), recipient: john.toString() }],
       ["message", "recipient"]
     );
@@ -58,10 +59,10 @@ describe("createProcessor", () => {
   });
 
   test("should be able to skip", async function () {
-    const encyptor = symetricEncrypt("symetric-secret");
+    const encrypter = symmetricEncrypt("symmetric-secret");
 
     const partialEncrypt = JSON.parse(
-      await encyptor`{"encrypted": "${"encrypted"}", "plain": "${skip(
+      await encrypter`{"encrypted": "${"encrypted"}", "plain": "${skip(
         "plain"
       )}"}`
     );

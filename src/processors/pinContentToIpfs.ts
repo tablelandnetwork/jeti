@@ -40,7 +40,7 @@ export class Pinner {
         }
 
         console.log(
-          "Good news; that CID is already pinned to your pinning service."
+          "This CID is already pinned to your pinning service."
         );
       }
     }

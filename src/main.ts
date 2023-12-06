@@ -6,4 +6,4 @@ export {
   type FileContent,
 } from "./processors/pinContentToIpfs.js";
 export { default as truncate } from "./processors/truncate.js";
-export { default as symetricEncrypt } from "./processors/symetricEncrypt.js";
+export { default as symmetricEncrypt } from "./processors/symmetricEncrypt.js";

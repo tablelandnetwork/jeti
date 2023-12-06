@@ -2,7 +2,7 @@ import createProcessor from "../processor";
 
 async function truncate(value: string) {
   if (typeof value !== "string") {
-    throw new Error("Can't truncate things that aren't strings");
+    throw new Error("Invalid type: can only truncate strings.");
   }
   return value.slice(0, 10);
 }
@@ -11,7 +11,7 @@ async function detruncate(value: string) {
   return (
     value +
     "..." +
-    "Yo, truncating is lossy, so you can't get the original back."
+    "Warning: the original value cannot be retrieved; truncating is lossy."
   );
 }
 

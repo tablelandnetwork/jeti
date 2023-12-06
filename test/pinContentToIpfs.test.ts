@@ -48,7 +48,8 @@ describe("pinContentToIpfs", function () {
     // Result: INSERT INTO mytable_31337_1 (id, file) values (id, 'ipfs://bafy...etc');
     // The pinToLocal also pinned the file to your local IPFS node.
 
-    await db.prepare(query).all();
+    const { meta: write } = await db.prepare(query).all();
+    await write.txn?.wait();
     const { results: resultSet } = await db
       .prepare(`SELECT * FROM ${tableName};`)
       .all<RowObject>();
@@ -91,7 +92,8 @@ describe("pinContentToIpfs", function () {
     const query =
       await processor`INSERT INTO ${tableName} (id, file) values (1, '${file}');`;
 
-    await db.prepare(query).all();
+    const { meta: write } = await db.prepare(query).all();
+    await write.txn?.wait();
     const { results: resultSet } = await db
       .prepare(`SELECT * FROM ${tableName};`)
       .all<RowObject>();
@@ -134,7 +136,8 @@ describe("pinContentToIpfs", function () {
     const query =
       await processor`INSERT INTO ${tableName} (id, file) values (1, '${file}');`;
 
-    await db.prepare(query).all();
+    const { meta: write } = await db.prepare(query).all();
+    await write.txn?.wait();
     const { results: resultSet } = await db
       .prepare(`SELECT * FROM ${tableName};`)
       .all<RowObject>();
