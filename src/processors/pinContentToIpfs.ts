@@ -4,6 +4,24 @@ import createProcessor from "../processor";
 export type FileContent = Uint8Array;
 
 export class Pinner {
+  /**
+   * @param ipfsOptions - Options to pass to IPFS.create(); only used if `where` is "provider".
+   * @param ipfs - IPFS instance to use. If not provided, a new one will be created.
+   * @param where - Where to pin the content. "local" or "provider". Defaults to "local".
+   * @returns The CID of the pinned content.
+   *
+   * Note: the available options are part of the "ipfs-http-client" package.
+   * The `Options` object is inclusive of:
+   * host?: string
+   * port?: number
+   * protocol?: string
+   * headers?: Headers | Record<string, string>
+   * timeout?: number | string
+   * apiPath?: string
+   * url?: URL|string|Multiaddr
+   * ipld?: Partial<IPLDOptions>
+   * agent?: HttpAgent | HttpsAgent
+   */
   ipfsOptions: IPFS.Options;
   ipfs: IPFS.IPFSHTTPClient;
   where: string;
@@ -14,21 +32,19 @@ export class Pinner {
     this.where = where;
   }
 
-  async pin(content: FileContent) {
-    if (typeof content === "string") return content;
+  async pin(content: string | FileContent) {
+    const textEncoder = new TextEncoder();
+    // Convert strings to Uint8Array aka FileContent
+    content =
+      typeof content === "string" ? textEncoder.encode(content) : content;
 
-    const pinningService = await this.#_getRemotePinningService();
-    const path = "";
-
-    const { cid } = await this.ipfs.add(
-      { content, path },
-      { wrapWithDirectory: false }
-    );
+    const { cid } = await this.ipfs.add(content);
 
     if (this.where === "local") {
       await this.ipfs.pin.add(cid);
     } else {
       try {
+        const pinningService = await this.#_getRemotePinningService();
         await this.ipfs.pin.remote.add(cid, {
           service: pinningService.service,
           name: "Tableland Upload",
@@ -39,9 +55,7 @@ export class Pinner {
           throw err;
         }
 
-        console.log(
-          "This CID is already pinned to your pinning service."
-        );
+        console.log("This CID is already pinned to your pinning service.");
       }
     }
 
@@ -49,7 +63,13 @@ export class Pinner {
   }
 
   async resolveCid(cid: string) {
-    return await this.ipfs.get(cid);
+    const stream = await this.ipfs.cat(cid);
+    let data: any[] = [];
+    for await (const chunk of stream) {
+      data = [...data, ...chunk];
+    }
+    const raw = Buffer.from(data).toString("utf8");
+    return raw;
   }
 
   async #_getRemotePinningService() {
@@ -64,17 +84,18 @@ export class Pinner {
   }
 }
 
-const localPinner = new Pinner();
-const providerPinner = new Pinner({}, "provider");
+export function pinToLocal(opts?: IPFS.Options) {
+  const localPinner = new Pinner(opts, "local");
+  return createProcessor(
+    localPinner.pin.bind(localPinner),
+    localPinner.resolveCid.bind(localPinner)
+  );
+}
 
-export const pinToLocal = createProcessor(
-  localPinner.pin.bind(localPinner),
-  localPinner.resolveCid.bind(localPinner)
-);
-// TODO: Allow passing in the provider's endpoint.
-//    How can this work if there's no way to set the provider?
-//    Can users create there own instance with custom ipfsOptions?
-export const pinToProvider = createProcessor(
-  providerPinner.pin.bind(providerPinner),
-  providerPinner.resolveCid.bind(providerPinner)
-);
+export function pinToProvider(opts?: IPFS.Options) {
+  const providerPinner = new Pinner(opts, "provider");
+  return createProcessor(
+    providerPinner.pin.bind(providerPinner),
+    providerPinner.resolveCid.bind(providerPinner)
+  );
+}
