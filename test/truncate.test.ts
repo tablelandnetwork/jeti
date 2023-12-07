@@ -15,17 +15,18 @@ describe("truncate", function () {
 
   test("should be able to truncate a string", async function () {
     const truncatedString = await truncate`${longString}`;
-    equal(truncatedString, longString.slice(0, 1025));
+    equal(truncatedString, longString.slice(0, 1024));
   });
 
-  test("should append message when trying to de-truncate a string", async function () {
+  test("should append ellipses when detruncate a string", async function () {
+    const truncatedString = await truncate`${longString}`;
     const detruncatedString = await truncate.resolve(
-      [{ val: `${longString}` }],
+      [{ val: `${truncatedString}` }],
       ["val"]
     );
     equal(
       detruncatedString[0].val,
-      [longString.slice(0, 1025), "..."].join("")
+      [truncatedString.slice(0, 1024), "..."].join("")
     );
   });
 

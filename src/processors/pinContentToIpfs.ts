@@ -1,5 +1,6 @@
 import * as IPFS from "ipfs-http-client";
 import { createProcessor } from "../processor";
+import { Buffer } from "buffer";
 
 export type FileContent = Uint8Array;
 

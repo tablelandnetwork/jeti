@@ -1,4 +1,5 @@
 import { createProcessor } from "../processor";
+import { Buffer } from "buffer";
 
 /**
  * Creates a function that truncates and detruncates content, used in a SQL
@@ -10,7 +11,18 @@ function truncate(value: string): string {
   if (typeof value !== "string") {
     throw new Error("Invalid type: can only truncate strings.");
   }
-  return value.slice(0, 1025);
+
+  let byteCount = 0;
+  let truncatedString = "";
+
+  for (const char of value) {
+    const charByteSize = Buffer.byteLength(char);
+    if (byteCount + charByteSize > 1024) break;
+    byteCount += charByteSize;
+    truncatedString += char;
+  }
+
+  return truncatedString;
 }
 
 /**
