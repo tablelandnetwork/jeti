@@ -1,5 +1,5 @@
 import * as IPFS from "ipfs-http-client";
-import createProcessor from "../processor";
+import { createProcessor } from "../processor";
 
 export type FileContent = Uint8Array;
 
@@ -33,12 +33,15 @@ export class Pinner {
   }
 
   async pin(content: string | FileContent) {
+    if (!content || content.length === 0) {
+      throw new Error("Content is empty or undefined; no CID created.");
+    }
     const textEncoder = new TextEncoder();
     // Convert strings to Uint8Array aka FileContent
     content =
       typeof content === "string" ? textEncoder.encode(content) : content;
 
-    const { cid } = await this.ipfs.add(content);
+    const { cid } = await this.ipfs.add(content, { wrapWithDirectory: false });
 
     if (this.where === "local") {
       await this.ipfs.pin.add(cid);
@@ -63,10 +66,18 @@ export class Pinner {
   }
 
   async resolveCid(cid: string) {
-    const stream = await this.ipfs.cat(cid);
+    const entries = this.ipfs.cat(cid);
+    const iterator = entries[Symbol.asyncIterator]();
+
     let data: any[] = [];
-    for await (const chunk of stream) {
-      data = [...data, ...chunk];
+    while (true) {
+      const result = await iterator.next();
+      if (result.done) {
+        break;
+      }
+
+      const { value } = result;
+      data = [...data, ...value];
     }
     const raw = Buffer.from(data).toString("utf8");
     return raw;
@@ -75,11 +86,12 @@ export class Pinner {
   async #_getRemotePinningService() {
     const pinningServices = await this.ipfs.pin.remote.service.ls();
 
-    if (pinningServices.length < 1) {
+    if (pinningServices.length === 0) {
       throw new Error("No remote pinning service connected.");
     }
 
-    // TODO: why are we using the first value?
+    // TODO: first value is used, but should be based on user preference for
+    // which remote pinning service to use.
     return pinningServices[0];
   }
 }

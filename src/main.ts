@@ -1,4 +1,4 @@
-export { default as createProcessor, skip, RowObject } from "./processor.js";
+export { createProcessor, skip, RowObject } from "./processor.js";
 export {
   pinToLocal,
   pinToProvider,
@@ -6,4 +6,8 @@ export {
   type FileContent,
 } from "./processors/pinContentToIpfs.js";
 export { default as truncate } from "./processors/truncate.js";
-export { default as symmetricEncrypt } from "./processors/symmetricEncrypt.js";
+export {
+  SecretAndSalt,
+  symmetricEncrypt,
+  generateRandomSecretAndSalt,
+} from "./processors/symmetricEncrypt.js";
