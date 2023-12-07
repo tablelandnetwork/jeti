@@ -43,7 +43,7 @@ export interface PrepareResult {
  * @param resolver A custom function that resolves the content.
  * @returns An instance of {@link PrepareResult}.
  */
-export default function createProcessor(
+export function createProcessor(
   customProcessor: Function,
   resolver: Function
 ): PrepareResult {
@@ -95,5 +95,3 @@ export default function createProcessor(
   };
   return prepare;
 }
-
-export { createProcessor };
