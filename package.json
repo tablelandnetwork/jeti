@@ -1,9 +1,9 @@
 {
   "name": "@tableland/jeti",
   "version": "0.0.0",
-  "description": "A TypeScript/JavaScript extension for the @tableland/sdk for inserting and retreiving IPFS content from tables",
+  "description": "An IPFS and generic plugin framework for inserting & retrieving data with the @tableland/sdk",
   "repository": "https://github.com/tablelandnetwork/jeti",
-  "license": "MIT",
+  "license": "MIT AND Apache-2.0",
   "publishConfig": {
     "access": "public"
   },
