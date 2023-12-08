@@ -1,8 +1,14 @@
-import { equal, rejects } from "node:assert";
+import { equal, rejects, strictEqual } from "node:assert";
 import { readFile } from "node:fs";
 import { test } from "mocha";
 import { getAccounts, getDatabase } from "@tableland/local";
-import { skip, Pinner, createProcessor } from "../src/main";
+import {
+  skip,
+  Pinner,
+  createProcessor,
+  pinToLocal,
+  pinToProvider,
+} from "../src/main";
 import { TEST_TIMEOUT_FACTOR } from "./setup";
 import * as MockIPFS from "mockipfs";
 import { temporaryWrite } from "tempy";
@@ -23,6 +29,40 @@ describe("pinContentToIpfs", function () {
   });
   afterEach(async function () {
     await mockNode.stop();
+  });
+
+  test("should be to use pinToLocal", async function () {
+    // Set up ipfs mock
+    const url = "http://localhost:54321";
+    mockNode
+      .forPinRemoteLs()
+      .thenReturn([{ service: "foo", endpoint: new URL(url) }]);
+
+    const localPin = pinToLocal({ url });
+    strictEqual(typeof localPin, "function");
+    strictEqual(typeof localPin.resolve, "function");
+    strictEqual(
+      localPin.resolve.length,
+      2,
+      "Expected 'resolve' method to have 2 parameters"
+    );
+  });
+
+  test("should be to use pinToProvider", async function () {
+    // Set up ipfs mock
+    const url = "http://localhost:54321";
+    mockNode
+      .forPinRemoteLs()
+      .thenReturn([{ service: "foo", endpoint: new URL(url) }]);
+
+    const remotePin = pinToProvider({ url });
+    strictEqual(typeof remotePin, "function");
+    strictEqual(typeof remotePin.resolve, "function");
+    strictEqual(
+      remotePin.resolve.length,
+      2,
+      "Expected 'resolve' method to have 2 parameters"
+    );
   });
 
   test("should be able to pin string to local", async function () {
