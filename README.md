@@ -25,7 +25,7 @@
 
 The [`@tableland/jeti`](https://github.com/tablelandnetwork/jeti) library builds on top of the [`@tableland/sdk`](https://github.com/tablelandnetwork/tableland-js/packages/sdk), allowing you to easily add IPFS data to Tableland and read the underlying data from Tableland. Simply import the library, connect to the Tableland network, and you are ready to start creating, updating, and reading table data.
 
-JETI (JavaScript Extension for Tableland Integrations) is also designed to be extensible. You can create you own custom plugins/processors that transform data inserted into tables or retrieved from tables. For example, the IPFS plugin processes data and inserts a CID in to a cell, and when data is read, it will "see" the CID and fetch/transform the underlying content within the query response. You can do whatever you'd like with an implementation suing the `creatorProcessor` method.
+JETI (JavaScript Extension for Tableland Integrations) is also designed to be extensible. You can create your own custom plugins/processors that transform data inserted into tables or retrieved from tables. For example, the IPFS plugin processes data and inserts a CID into a cell, and when data is read, it will "see" the CID and fetch/transform the underlying content within the query response. You can do whatever you'd like with an implementation using the `creatorProcessor` method.
 
 ## Install
 

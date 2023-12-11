@@ -87,7 +87,7 @@
     "ipfs-http-client": "^60.0.1"
   },
   "contributors": [
-    "Allen Muncy <allen@textile.io>",
+    "Dan Buchholz <dan@textile.io>",
     "Carson Farmer <carson@textile.io>",
     "Joe Wagner <joe@textile.io>"
   ]
