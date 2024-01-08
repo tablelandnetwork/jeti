@@ -1,4 +1,4 @@
-function zip(firstArray: string[], secondArray: string[]) {
+function zip(firstArray: string[], secondArray: string[]): string {
   let str = "";
   for (let i = 0; i < firstArray.length; i++) {
     if (secondArray[i]) {
@@ -11,10 +11,20 @@ function zip(firstArray: string[], secondArray: string[]) {
   return str;
 }
 
-export interface RowObject {
-  [key: string]: string | number;
-}
+/**
+ * Represents a row of data in a table.
+ */
+export type RowObject = Record<string, unknown>;
 
+/**
+ * Defines skipping behavior for a value such that is will not be pinned to
+ * IPFS. This is useful for values like a table name passed to a string
+ * templated query string. E.g., `const sql = pinToLocal`insert into
+ * ${skip(tableName)} (message) values ('${contentToPin}');`;`
+ * @param value The value to skip.
+ * @returns An object that defines skipping behavior where `jetiShouldSkip` is
+ * `true` and `original` is the original value.
+ */
 export function skip(value: string) {
   return {
     jetiShouldSkip: true,
@@ -22,15 +32,26 @@ export function skip(value: string) {
   };
 }
 
-export default function createProcessor(
+export interface PrepareResult {
+  (strings: TemplateStringsArray, ...values: any[]): Promise<string>;
+  resolve(resultSet: RowObject[], keysToResolve: string[]): Promise<any[]>;
+}
+
+/**
+ * Creates a function that processes content and resolves it.
+ * @param customProcessor A custom function that processes the content.
+ * @param resolver A custom function that resolves the content.
+ * @returns An instance of {@link PrepareResult}.
+ */
+export function createProcessor(
   customProcessor: Function,
   resolver: Function
-) {
+): PrepareResult {
   const prepare = async function prepare(
     strings: TemplateStringsArray,
     ...values: any[]
   ) {
-    const strings2 = Array.from(strings);
+    const stringsArr = Array.from(strings);
 
     const prom = values.map(async (value): Promise<string> => {
       if (value.jetiShouldSkip) {
@@ -47,7 +68,7 @@ export default function createProcessor(
     });
 
     const processedValues = await Promise.all(prom);
-    const statementAfterProcessing = zip(strings2, processedValues);
+    const statementAfterProcessing = zip(stringsArr, processedValues);
 
     return statementAfterProcessing;
   };
@@ -74,5 +95,3 @@ export default function createProcessor(
   };
   return prepare;
 }
-
-export { createProcessor };
