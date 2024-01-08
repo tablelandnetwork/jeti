@@ -1,16 +1,22 @@
-import { equal, rejects } from "node:assert/strict";
+import { equal, notEqual, rejects } from "node:assert/strict";
+import { Buffer } from "buffer";
 import { describe, test } from "mocha";
 import { assert } from "sinon";
-import { createProcessor, symetricEncrypt, skip } from "../src/main";
+import {
+  createProcessor,
+  generateRandomSecretAndSalt,
+  symmetricEncrypt,
+  skip,
+} from "../src/main";
 
 describe("createProcessor", () => {
-  test("Should create processor which converts to and resolves base 64 strings", async () => {
+  test("should create processor which converts to and resolves base 64 strings", async () => {
     const b64 = createProcessor(
       (value: string) => {
-        return btoa(value);
+        return Buffer.from(value).toString("base64");
       },
-      (cell: string | number) => {
-        return atob(cell.toString());
+      (cell: string) => {
+        return Buffer.from(cell, "base64").toString("utf8");
       }
     );
 
@@ -35,44 +41,59 @@ describe("createProcessor", () => {
     assert.match(resultFromResolver[1].otherColumn, "Sm9obiBEb2U=");
   });
 
-  test("Built in encrypt example encrypts and decrypts", async () => {
-    const encyptor = symetricEncrypt("symetric-secret");
+  test("should encrypt and decrypt values in a SQL string", async () => {
+    const { secret, salt } = generateRandomSecretAndSalt();
+    const encrypter = symmetricEncrypt(secret, salt);
 
-    const createdStatement =
-      await encyptor`INSERT INTO table_31337_1 (message, recipient) VALUES ('${"Hello World"}', '${"John Doe"}');`;
-    const [world, john] = createdStatement.matchAll(
-      /U2FsdGVkX[0-9a-zA-Z/+=]+/g
-    );
-    assert.match(
-      createdStatement,
-      `INSERT INTO table_31337_1 (message, recipient) VALUES ('${world}', '${john}');`
-    );
+    const originalMessage = "Hello World";
+    const originalRecipient = "John Doe";
+    const encryptedStatement =
+      await encrypter`INSERT INTO table_31337_1(message,recipient)VALUES('${originalMessage}','${originalRecipient}');`;
+    // Get the encrypted values from the statement
+    const regex = /VALUES\s*\('([^']*)','([^']*)'\)/i;
+    const matches = regex.exec(encryptedStatement);
+    const encryptedMessage = matches![1];
+    const encryptedRecipient = matches![2];
 
-    const results = await encyptor.resolve(
-      [{ message: world.toString(), recipient: john.toString() }],
+    // Ensure the encrypted values are not the same as the original values
+    notEqual(originalMessage, encryptedMessage);
+    notEqual(originalRecipient, encryptedRecipient);
+
+    // Decrypt the encrypted values
+    const decryptedStatement = await encrypter.resolve(
+      [
+        {
+          message: encryptedMessage.toString(),
+          recipient: encryptedRecipient.toString(),
+        },
+      ],
       ["message", "recipient"]
     );
 
-    assert.match(results[0].message, "Hello World");
-    assert.match(results[0].recipient, "John Doe");
+    // Ensure the decrypted values are the same as the original values
+    assert.match(decryptedStatement[0].message, originalMessage);
+    assert.match(decryptedStatement[0].recipient, originalRecipient);
   });
 
   test("should be able to skip", async function () {
-    const encyptor = symetricEncrypt("symetric-secret");
+    const { secret, salt } = generateRandomSecretAndSalt();
+    const encrypter = symmetricEncrypt(secret, salt);
 
+    const valueToEncrypt = "encrypted";
+    const valueToSkip = "plain";
     const partialEncrypt = JSON.parse(
-      await encyptor`{"encrypted": "${"encrypted"}", "plain": "${skip(
-        "plain"
+      await encrypter`{"encrypted": "${valueToEncrypt}", "plain": "${skip(
+        valueToSkip
       )}"}`
     );
 
-    console.log(partialEncrypt);
-    equal(partialEncrypt.plain, "plain");
-    equal(partialEncrypt.encrypted.slice(0, 10), "U2FsdGVkX1");
+    // Ensure the encrypted value is not the same as the original value
+    equal(partialEncrypt.plain, valueToSkip);
+    notEqual(partialEncrypt.encrypted, valueToEncrypt);
   });
 
-  test("throws an error if processor does not return a string", async function () {
-    const subtraddify = createProcessor(
+  test("should throw an error if processor does not return a string", async function () {
+    const invalidProcessor = createProcessor(
       (value: string) => {
         return Number(value) + 1;
       },
@@ -81,7 +102,7 @@ describe("createProcessor", () => {
       }
     );
 
-    const insertStatement = subtraddify`INSERT INTO subtradd_31337_1 (val) VALUES (${"1"});`;
+    const insertStatement = invalidProcessor`INSERT INTO invalid_31337_1 (val) VALUES (${"1"});`;
     await rejects(insertStatement, {
       name: "Error",
       message:
