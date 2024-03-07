@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@tableland/local": "^2.3.0",
-    "@tableland/sdk": "^5.1.1",
+    "@tableland/sdk": "^6.0.0",
     "@types/crypto-js": "^4.1.1",
     "@types/mocha": "^10.0.6",
     "@types/sinon": "^17.0.2",
