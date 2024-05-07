@@ -58,7 +58,7 @@
     "format": "npm run prettier:fix && npm run lint:fix"
   },
   "devDependencies": {
-    "@tableland/local": "^2.3.0",
+    "@tableland/local": "^3.0.0",
     "@tableland/sdk": "^6.0.0",
     "@types/crypto-js": "^4.1.1",
     "@types/mocha": "^10.0.6",
