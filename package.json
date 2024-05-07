@@ -58,8 +58,8 @@
     "format": "npm run prettier:fix && npm run lint:fix"
   },
   "devDependencies": {
-    "@tableland/local": "^2.3.0",
-    "@tableland/sdk": "^6.0.0",
+    "@tableland/local": "^3.0.0",
+    "@tableland/sdk": "^7.0.0",
     "@types/crypto-js": "^4.1.1",
     "@types/mocha": "^10.0.6",
     "@types/sinon": "^17.0.2",
@@ -67,7 +67,7 @@
     "@typescript-eslint/parser": "^7.1.0",
     "add-js-extension": "^1.0.4",
     "c8": "^9.0.0",
-    "esbuild": "^0.20.0",
+    "esbuild": "^0.21.0",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard": "^17.0.0",
